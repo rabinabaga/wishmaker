@@ -110,18 +110,19 @@ const Priority = ({ priority }) => {
 const Home = () => {
   const dispatch = useDispatch();
   document.title = "To Do Lists |  - React Admin & Dashboard Template";
- const [file, setFile] = useState(null);
+  const [file, setFile] = useState(null);
   const [deleteModal, setDeleteModal] = useState(false);
   const todosStore = useSelector((state) => state.TodoAsync.todosData);
 
   console.log("todos store", todosStore);
   const projects = useSelector((state) => state.TodoAsync.projectsDataAsync);
-
+  let formData = new FormData();
   const [todos, setTodos] = useState([]);
   const [taskList, setTaskList] = useState([]);
-   const handleFileChange = (e) => {
-     setFile(e.target.files[0]);
-   };
+  const handleFileChange = (e) => {
+    console.log(e.target.files[0]);
+    formData.append("imageSrc", e.target.files[0]);
+  };
   useEffect(() => {
     console.log("todo store", todosStore);
     setTodos(todosStore);
@@ -187,6 +188,7 @@ const Home = () => {
   //   }
   // }, [modalCampaign]);
 
+  const [campaignDataPost, setcampaignDataPost] = useState(null);
   const toggleCampaignModal = () => setModalCampaign(!modalCampaign);
 
   // Toggle Project Modal
@@ -482,24 +484,27 @@ const Home = () => {
           goalAmount: values.goalAmount,
         };
         setCampaign(newCampaign);
+        campaignDataPost;
+        formData.append("campaignTitle", values.campaignTitle);
+        formData.append("goalAmount", values.goalAmount);
 
-        console.log("new campaign", newCampaign);
+        setcampaignDataPost(formData);
+
         // dispatch(addTodoTodoPageAsync(newCampaign));
         // save new Folder
         // dispatch(addTodoTodoPageAsync(newCampaign));
         try {
-
           const config = {
             headers: {
-              Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWVkMDg0ZDVhM2Y4NTQ5MDlkMDIzNSIsImlhdCI6MTcyMDE0MDIyNywiZXhwIjoxNzIwMjI2NjI3fQ.n5xTx7_7FBtZE-Bi9YVgHIwNc8UGxwHrSHbpiXvPEJg`,
-              "content-type": "multipart/form-data",
+              "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWVkMDg0ZDVhM2Y4NTQ5MDlkMDIzNSIsImlhdCI6MTcyMDE1NTUyNiwiZXhwIjoxNzIwMjQxOTI2fQ.Unr1EguofUxThB4y1FL-C24YIqQPwc9Hm1o3vNu5nPo`,
+              "Content-Type": "multipart/form-data",
             },
-          };
+          };  
+          
+
           const { data } = await axios.post(
             "/campaign",
-            {
-              newCampaign: newCampaign,
-            },
+           campaignDataPost,
             config
           );
           alert("photo uploaded successfully");

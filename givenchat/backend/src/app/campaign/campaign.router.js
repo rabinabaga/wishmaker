@@ -7,18 +7,18 @@ const checkAuthentication = require("../../middlewares/auth.middleware");
 
 // const checkPermission = require("../../middlewares/rbac.middleware")
 
-  router.post(
-  "/",
-  upload.single("imageSrc"),
-  (req, res, next) => {
-  console.log("req.file", req.file, "req.body", req.body);}
-);
-// router.post(
+//   router.post(
 //   "/",
-//   upload.single("newCampaign.imageSrc"),
-//   checkAuthentication,
-//   campaignCtrl.createCampaign
+//   upload.single("imageSrc"),
+//   (req, res, next) => {
+//   console.log("req.file", req.file, "req.body", req.body);}
 // );
+router.post(
+  "/",
+ upload.single("imageSrc"),
+  checkAuthentication,
+  campaignCtrl.createCampaign
+);
 // router.delete("/:id", checkAuthentication, gamePlanCtrl.deleteGamePlan);
 
 // router.delete("/:id", checkAuthentication, gamePlanCtrl.createGamePlan);

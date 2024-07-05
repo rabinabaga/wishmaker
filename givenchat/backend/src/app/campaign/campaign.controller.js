@@ -1,6 +1,6 @@
 // const UserModel = require("../auth/user.model");
 // const GamePlanModel = require("./game_plan.model");
-// const gamePlanSvc = require("./game_plan.service.js");
+const campaignSvc = require("./campaign.service.js");
 
 class CampaignController {
 //   gamePlanSvc;
@@ -9,16 +9,16 @@ class CampaignController {
 //   }
   async createCampaign(req, res, next) {
     console.log("req.body", req.body, "req.file", req.file);
-    // try {
-    //   let new_game_plan = await gamePlanSvc.createGamePlan(req);
-    //   res.json({
-    //     result: new_game_plan,
-    //     message: "new game plan created successfully",
-    //     meta: null,
-    //   });
-    // } catch (exception) {
-    //   next(exception);
-    // }
+    try {
+      let new_campaign = await campaignSvc.createCampaign(req);
+      res.json({
+        result: new_campaign,
+        message: "new game plan created successfully",
+        meta: null,
+      });
+    } catch (exception) {
+      next(exception);
+    }
   }
   async deleteGamePlan(req, res, next) {
     try {
