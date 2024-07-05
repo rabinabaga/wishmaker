@@ -4,11 +4,11 @@ import { api } from "../config";
 // default
 axios.defaults.baseURL = "http://localhost:8001/api/v1";
 // content type
-axios.defaults.headers.post["Content-Type"] = "application/json";
+// axios.defaults.headers.post["Content-Type"] = "application/json";
 
-axios.defaults.headers.common["Authorization"] =
-  "Bearer " +
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWVkMDg0ZDVhM2Y4NTQ5MDlkMDIzNSIsImlhdCI6MTcxOTg5NDg2MCwiZXhwIjoxNzE5OTgxMjYwfQ.LGKRm64tE5JLBImJ2hLvEnWpvg3xblIWuUQ3zonAc-w";
+// axios.defaults.headers.common["Authorization"] =
+//   "Bearer " +
+//   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWVkMDg0ZDVhM2Y4NTQ5MDlkMDIzNSIsImlhdCI6MTcxOTg5NDg2MCwiZXhwIjoxNzE5OTgxMjYwfQ.LGKRm64tE5JLBImJ2hLvEnWpvg3xblIWuUQ3zonAc-w";
 
 // intercepting to capture errors
 axios.interceptors.response.use(

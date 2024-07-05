@@ -37,6 +37,18 @@ export const addTodoTodoPageAsync = createAsyncThunk(
     }
   }
 );
+
+// export const addCampaignPageAsync = createAsyncThunk(
+//   "TodoPageAsyncSlice/addTodoTodoPageAsync",
+//   async (todo) => {
+//     try {
+//       const response = await axios.post("/game_plan", todo);
+//       return response.result;
+//     } catch (exception) {
+//       return exception;
+//     }
+//   }
+// );
 export const getTodoTodoPageAsync = createAsyncThunk(
   "TodoPageAsyncSlice/getTodoTodoPageAsync",
   async () => {

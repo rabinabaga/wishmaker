@@ -51,6 +51,7 @@ import {
   updateTodoTodoPageAsync,
 } from "../../slices/thunks";
 import { createSelector } from "reselect";
+import axios from "axios";
 
 const Status = ({ status }) => {
   switch (status) {
@@ -109,7 +110,7 @@ const Priority = ({ priority }) => {
 const Home = () => {
   const dispatch = useDispatch();
   document.title = "To Do Lists |  - React Admin & Dashboard Template";
-
+ const [file, setFile] = useState(null);
   const [deleteModal, setDeleteModal] = useState(false);
   const todosStore = useSelector((state) => state.TodoAsync.todosData);
 
@@ -118,6 +119,9 @@ const Home = () => {
 
   const [todos, setTodos] = useState([]);
   const [taskList, setTaskList] = useState([]);
+   const handleFileChange = (e) => {
+     setFile(e.target.files[0]);
+   };
   useEffect(() => {
     console.log("todo store", todosStore);
     setTodos(todosStore);
@@ -174,14 +178,16 @@ const Home = () => {
     }
   }, [modalTodo]);
 
-  const toggleCampaignModal = useCallback(() => {
-    if (modalCampaign) {
-      setModalCampaign(false);
-      setCampaign(null);
-    } else {
-      setModalCampaign(true);
-    }
-  }, [modalCampaign]);
+  // const toggleCampaignModal = useCallback(() => {
+  //   if (modalCampaign) {
+  //     setModalCampaign(false);
+  //     setCampaign(null);
+  //   } else {
+  //     setModalCampaign(true);
+  //   }
+  // }, [modalCampaign]);
+
+  const toggleCampaignModal = () => setModalCampaign(!modalCampaign);
 
   // Toggle Project Modal
   const toggleProject = () => {
@@ -427,25 +433,25 @@ const Home = () => {
     },
     validationSchema: Yup.object({
       campaignTitle: Yup.string().required("Please Enter Campaign Title"),
-      goalAmount: Yup.string().required("Please Enter Campaign Goal Amount"),
+      goalAmount: Yup.number().required("Please Enter Campaign Goal Amount"),
       // dueDate: Yup.string().required("Please Enter Date"),
-      imageFile: Yup.mixed()
-        .required("required")
-        .test("fileFormat", "Only JPG and JPEG files are allowed", (value) => {
-          if (value) {
-            const supportedFormats = ["jpg", "jpeg"];
-            return supportedFormats.includes(value.name.split(".").pop());
-          }
-          return true;
-        })
-        .test("fileSize", "File size must be less than 3MB", (value) => {
-          if (value) {
-            return value.size <= 3145728;
-          }
-          return true;
-        }),
+      // imageFile: Yup.mixed()
+      //   .required("required")
+      //   .test("fileFormat", "Only JPG and JPEG files are allowed", (value) => {
+      //     if (value) {
+      //       const supportedFormats = ["jpg", "jpeg"];
+      //       return supportedFormats.includes(value.name.split(".").pop());
+      //     }
+      //     return true;
+      //   })
+      //   .test("fileSize", "File size must be less than 3MB", (value) => {
+      //     if (value) {
+      //       return value.size <= 3145728;
+      //     }
+      //     return true;
+      //   }),
     }),
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       if (isEdit) {
         console.log("here in onsubmit eidit", values);
         const updateTodo = {
@@ -470,23 +476,37 @@ const Home = () => {
         validation.resetForm();
         toggle();
       } else {
-        const newTodo = {
-          title: values.task,
-          status: values.status,
-          project_id: values.project,
-          priority: values.priority,
+        const newCampaign = {
+          campaignTitle: values.campaignTitle,
+          imageSrc: file,
+          goalAmount: values.goalAmount,
         };
-        setTodo(newTodo);
-        let newTodos;
-        //save to local storage
-        if (newTodo) {
-          newTodos = [...todos, newTodo];
-        } else {
-          newTodos = todos;
-        }
-        console.log(newTodo);
-        dispatch(addTodoTodoPageAsync(newTodo));
+        setCampaign(newCampaign);
+
+        console.log("new campaign", newCampaign);
+        // dispatch(addTodoTodoPageAsync(newCampaign));
         // save new Folder
+        // dispatch(addTodoTodoPageAsync(newCampaign));
+        try {
+
+          const config = {
+            headers: {
+              Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWVkMDg0ZDVhM2Y4NTQ5MDlkMDIzNSIsImlhdCI6MTcyMDE0MDIyNywiZXhwIjoxNzIwMjI2NjI3fQ.n5xTx7_7FBtZE-Bi9YVgHIwNc8UGxwHrSHbpiXvPEJg`,
+              "content-type": "multipart/form-data",
+            },
+          };
+          const { data } = await axios.post(
+            "/campaign",
+            {
+              newCampaign: newCampaign,
+            },
+            config
+          );
+          alert("photo uploaded successfully");
+        } catch (err) {
+          console.log("failed to upload photos", err);
+        }
+
         validation.resetForm();
 
         toggle();
@@ -661,8 +681,9 @@ const Home = () => {
         <ModalBody>
           <div id="task-error-msg" className="alert alert-danger py-2"></div>
           <Form
-            id="creattask-form"
+            id="createCampaign-form"
             onSubmit={(e) => {
+              console.log("here in submit campaign", campaignValidation.values);
               e.preventDefault();
               campaignValidation.handleSubmit();
               return false;
@@ -710,7 +731,7 @@ const Home = () => {
                   id="status-field"
                   onChange={campaignValidation.handleChange}
                   onBlur={campaignValidation.handleBlur}
-                  value={campaignValidation.values.status || ""}
+                  value={campaignValidation.values.goalAmount || ""}
                 >
                   {campaignValidation.touched.goalAmount &&
                   campaignValidation.errors.goalAmount ? (
@@ -730,16 +751,15 @@ const Home = () => {
                 <label htmlFor="task-project" className="form-label">
                   Campaign Cover Image
                 </label>
-                <input type="file" name="imageFile" accept=".jpeg" />
-
-                {campaignValidation.touched.imageFile && campaignValidation.errors.imageFile ? (
-                  <FormFeedback type="invalid">
-                    {campaignValidation.errors.imageFile}
-                  </FormFeedback>
-                ) : null}
+                <input
+                  id="files"
+                  onChange={handleFileChange}
+                  name="imageSrc"
+                  type="file"
+                  className=" w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                />
               </Col>
             </Row>
-           
 
             <div className="hstack gap-2 justify-content-end">
               <button
@@ -749,15 +769,18 @@ const Home = () => {
               >
                 <i className="ri-close-fill align-bottom"></i> Close
               </button>
-              <button type="submit" className="btn btn-primary" id="addNewTodo">
+              <button
+                type="submit"
+                className="btn btn-primary"
+                onClick={() => setModalCampaign(false)}
+                id="addNewTodo"
+              >
                 {!!isEdit ? "Save" : "Create Campaign"}
               </button>
             </div>
           </Form>
         </ModalBody>
       </Modal>
-
-  
 
       {/* Projects */}
       <Modal
