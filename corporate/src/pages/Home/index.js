@@ -680,7 +680,8 @@ const Home = () => {
                       <>
                         <div className="card col-md-3">
                           <img
-                            className="card-img-top object-fit-cover" style={{height:"200px"}}
+                            className="card-img-top object-fit-cover"
+                            style={{ height: "200px" }}
                             src={`http://localhost:8001/images/${item.imageSrc}`}
                             alt="Card image cap"
                           />
@@ -690,8 +691,17 @@ const Home = () => {
                             alt={caption}
                           />
                           const url_imgs = "http://localhost:8001/images/" */}
-                          <p>Campaign Title: {item.campaignTitle}</p>
-                          <p>Goal Amount: {item.goalAmount}</p>
+                          <p>
+                            Campaign Title:
+                            <span className="fw-medium">
+                              {item.campaignTitle}
+                            </span>{" "}
+                          </p>
+                          <p>
+                            Goal Amount:{" "}
+                            <span >{item.goalAmount}</span>
+                          </p>
+                          <p>Started By: {item.campaigner_id.name}</p>
                           <button className="btn btn-primary">
                             Donate Now
                           </button>

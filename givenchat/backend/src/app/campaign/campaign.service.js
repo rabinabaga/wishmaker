@@ -26,8 +26,8 @@ class CampaignService {
 
   listAllCampaigns = async (filter = {}, paging = { skip: 0, limit: 8 }) => {
     try {
-      const campaigns = await CampaignModel.find();
-      console.log("game plans", campaigns);
+      const campaigns = await CampaignModel.find().populate('campaigner_id');
+      console.log("campaigns", campaigns);
       return campaigns;
     } catch (exception) {
       throw exception;
