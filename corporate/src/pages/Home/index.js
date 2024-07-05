@@ -693,13 +693,15 @@ const Home = () => {
                           const url_imgs = "http://localhost:8001/images/" */}
                           <p>
                             Campaign Title:
-                            <span className="fw-medium">
+                            <h6 className="fs-18 fw-semibold">
                               {item.campaignTitle}
-                            </span>{" "}
+                            </h6>{" "}
                           </p>
                           <p>
                             Goal Amount:{" "}
-                            <span >{item.goalAmount}</span>
+                            <h6 className="fs-18 fw-semibold">
+                              {item.goalAmount}
+                            </h6>{" "}
                           </p>
                           <p>Started By: {item.campaigner_id.name}</p>
                           <button className="btn btn-primary">
