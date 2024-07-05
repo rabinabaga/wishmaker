@@ -489,6 +489,7 @@ const Home = () => {
         console.log("formdata", "after handlefilechnage, ", formData);
         formData.append("campaignTitle", values.campaignTitle);
         formData.append("goalAmount", values.goalAmount);
+        console.log("file", file);
         formData.append("imageSrc", file);
         console.log(
           "formdata",
@@ -504,14 +505,14 @@ const Home = () => {
         try {
           const config = {
             headers: {
-              Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWVkMDg0ZDVhM2Y4NTQ5MDlkMDIzNSIsImlhdCI6MTcyMDE1NTUyNiwiZXhwIjoxNzIwMjQxOTI2fQ.Unr1EguofUxThB4y1FL-C24YIqQPwc9Hm1o3vNu5nPo`,
-              "Content-Type": "multipart/form-data",
+              "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWVkMDg0ZDVhM2Y4NTQ5MDlkMDIzNSIsImlhdCI6MTcyMDE1NTUyNiwiZXhwIjoxNzIwMjQxOTI2fQ.Unr1EguofUxThB4y1FL-C24YIqQPwc9Hm1o3vNu5nPo`,
+             
             },
           };
 
           const { data } = await axios.post(
             "/campaign",
-            campaignDataPost,
+            formData,
             config
           );
           alert("photo uploaded successfully");
