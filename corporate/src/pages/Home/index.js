@@ -680,7 +680,7 @@ const Home = () => {
                       <>
                         <div className="card col-md-3">
                           <img
-                            class="card-img-top"
+                            className="card-img-top object-fit-cover" style={{height:"200px"}}
                             src={`http://localhost:8001/images/${item.imageSrc}`}
                             alt="Card image cap"
                           />
