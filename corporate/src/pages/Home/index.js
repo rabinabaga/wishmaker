@@ -41,6 +41,7 @@ import avatar9 from "../../assets/images/users/avatar-9.jpg";
 import avatar10 from "../../assets/images/users/avatar-10.jpg";
 
 //import action
+import { getCampaignsPageAsync } from "../../slices/thunks";
 import {
   getProjectsTodoPageAsync,
   addTodoTodoPage,
@@ -50,6 +51,7 @@ import {
   deleteTodoTodoPageAsync,
   updateTodoTodoPageAsync,
 } from "../../slices/thunks";
+
 import { createSelector } from "reselect";
 import axios from "axios";
 
@@ -112,16 +114,22 @@ const Home = () => {
   document.title = "To Do Lists |  - React Admin & Dashboard Template";
   const [file, setFile] = useState(null);
   const [deleteModal, setDeleteModal] = useState(false);
+  const campaignStore = useSelector(
+    (state) => state.CampaignsAsync.campaignsDataAsync
+  );
   const todosStore = useSelector((state) => state.TodoAsync.todosData);
 
   console.log("todos store", todosStore);
+
+  console.log("campaigns store", campaignStore);
   const projects = useSelector((state) => state.TodoAsync.projectsDataAsync);
   let formData = new FormData();
   const [todos, setTodos] = useState([]);
   const [taskList, setTaskList] = useState([]);
   const handleFileChange = (e) => {
     console.log(e.target.files[0]);
-    formData.append("imageSrc", e.target.files[0]);
+    setFile(e.target.files[0]);
+    // formData.append("imageSrc", e.target.files[0]);
   };
   useEffect(() => {
     console.log("todo store", todosStore);
@@ -146,7 +154,8 @@ const Home = () => {
   const [isEdit, setIsEdit] = useState(false);
 
   useEffect(() => {
-    dispatch(getProjectsTodoPageAsync());
+    console.log("in dispatch get campaigns");
+    dispatch(getCampaignsPageAsync());
   }, []);
   useEffect(() => {
     dispatch(getTodoTodoPageAsync());
@@ -430,7 +439,6 @@ const Home = () => {
 
     initialValues: {
       campaignTitle: (campaign && campaign?.campaignTitle) || "",
-      imageFile: (campaign && campaign?.imageFile) || "",
       goalAmount: (campaign && campaign?.goalAmount) || "",
     },
     validationSchema: Yup.object({
@@ -478,15 +486,15 @@ const Home = () => {
         validation.resetForm();
         toggle();
       } else {
-        const newCampaign = {
-          campaignTitle: values.campaignTitle,
-          imageSrc: file,
-          goalAmount: values.goalAmount,
-        };
-        setCampaign(newCampaign);
-        campaignDataPost;
+        console.log("formdata", "after handlefilechnage, ", formData);
         formData.append("campaignTitle", values.campaignTitle);
         formData.append("goalAmount", values.goalAmount);
+        formData.append("imageSrc", file);
+        console.log(
+          "formdata",
+          "appending fields handlefilechnage, ",
+          formData
+        );
 
         setcampaignDataPost(formData);
 
@@ -496,15 +504,14 @@ const Home = () => {
         try {
           const config = {
             headers: {
-              "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWVkMDg0ZDVhM2Y4NTQ5MDlkMDIzNSIsImlhdCI6MTcyMDE1NTUyNiwiZXhwIjoxNzIwMjQxOTI2fQ.Unr1EguofUxThB4y1FL-C24YIqQPwc9Hm1o3vNu5nPo`,
+              Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWVkMDg0ZDVhM2Y4NTQ5MDlkMDIzNSIsImlhdCI6MTcyMDE1NTUyNiwiZXhwIjoxNzIwMjQxOTI2fQ.Unr1EguofUxThB4y1FL-C24YIqQPwc9Hm1o3vNu5nPo`,
               "Content-Type": "multipart/form-data",
             },
-          };  
-          
+          };
 
           const { data } = await axios.post(
             "/campaign",
-           campaignDataPost,
+            campaignDataPost,
             config
           );
           alert("photo uploaded successfully");
@@ -656,7 +663,7 @@ const Home = () => {
                 className="todo-content position-relative px-4 mx-n4"
                 id="todo-content"
               >
-                {!todos && (
+                {/* {!todos && (
                   <div id="elmLoader">
                     <div
                       className="spinner-border text-primary avatar-sm"
@@ -665,7 +672,33 @@ const Home = () => {
                       <span className="visually-hidden">Loading...</span>
                     </div>
                   </div>
-                )}
+                )} */}
+                <div className="row">
+                  {(campaignStore || []).map((item) => {
+                    return (
+                      <>
+                        <div className="card col-md-3">
+                          <img
+                            class="card-img-top"
+                            src={`http://localhost:8001/images/${item.imageSrc}`}
+                            alt="Card image cap"
+                          />
+                          {/* <img
+                            src={`${url_imgs}${src}`}
+                            className="object-cover max-h-72"
+                            alt={caption}
+                          />
+                          const url_imgs = "http://localhost:8001/images/" */}
+                          <p>Campaign Title: {item.campaignTitle}</p>
+                          <p>Goal Amount: {item.goalAmount}</p>
+                          <button className="btn btn-primary">
+                            Donate Now
+                          </button>
+                        </div>
+                      </>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>

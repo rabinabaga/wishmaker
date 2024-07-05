@@ -62,6 +62,7 @@ export * from "./fileManager/thunk";
 export {addProjectTodoPage, addTodoTodoPage} from "./todo/reducer"
 // To do async 
 export * from "./todoReduxAsync/thunk"
+export * from "./campaignAsync/thunk"
 
 // Jobs
 export * from "./jobs/thunk";

@@ -66,6 +66,7 @@ import FileManagerReducer from "./fileManager/reducer";
 // To do
 import TodoReducer from "./todo/reducer";
 import TodoAsyncReducer from "./todoReduxAsync/reducer";
+import CampaignsAsyncReducer from "./campaignAsync/reducer"
 
 // Job
 import JobReducer from "./jobs/reducer";
@@ -77,6 +78,7 @@ const rootReducer = combineReducers({
     Layout: LayoutReducer,
     Todo: TodoReducer,
     TodoAsync :TodoAsyncReducer,
+    CampaignsAsync:CampaignsAsyncReducer,
     Login: LoginReducer,
     Account: AccountReducer,
     ForgetPassword: ForgetPasswordReducer,
@@ -101,7 +103,8 @@ const rootReducer = combineReducers({
     FileManager: FileManagerReducer,
     Jobs: JobReducer,
     APIKey: APIKeyReducer,
-    NewTask: NewTaskReducer
+    NewTask: NewTaskReducer,
+
 });
 
 export default rootReducer;

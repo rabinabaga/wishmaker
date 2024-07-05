@@ -3,14 +3,15 @@
 const campaignSvc = require("./campaign.service.js");
 
 class CampaignController {
-//   gamePlanSvc;
-//   constructor(svc) {
-//     this.gamePlanSvc = svc;
-//   }
+  //   gamePlanSvc;
+  //   constructor(svc) {
+  //     this.gamePlanSvc = svc;
+  //   }
   async createCampaign(req, res, next) {
     console.log("req.body", req.body, "req.file", req.file);
     try {
       let new_campaign = await campaignSvc.createCampaign(req);
+      console.log("new campaign");
       res.json({
         result: new_campaign,
         message: "new game plan created successfully",
@@ -35,7 +36,7 @@ class CampaignController {
     }
   }
 
-  async showAllGamePlan(req, res, next) {
+  async getAllCampaigns(req, res, next) {
     try {
       let search = req.query.search ?? null;
 
@@ -45,11 +46,11 @@ class CampaignController {
       let skip = (currentPage - 1) * limit;
 
       // console.log(filter);
-      let gamePlans = await gamePlanSvc.listAllGamePlans();
+      let campaigns = await campaignSvc.listAllCampaigns();
       console.log("all game plan");
       res.json({
-        result: gamePlans,
-        message: "gameplan fetched successfully",
+        result: campaigns,
+        message: "campaigns fetched successfully",
       });
     } catch (exception) {
       next(exception);

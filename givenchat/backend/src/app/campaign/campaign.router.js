@@ -19,6 +19,11 @@ router.post(
   checkAuthentication,
   campaignCtrl.createCampaign
 );
+router.get(
+  "/",
+  checkAuthentication,
+  campaignCtrl.getAllCampaigns
+);
 // router.delete("/:id", checkAuthentication, gamePlanCtrl.deleteGamePlan);
 
 // router.delete("/:id", checkAuthentication, gamePlanCtrl.createGamePlan);
