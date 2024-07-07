@@ -493,49 +493,49 @@ const Home = () => {
       toggleProject();
     },
   });
-  const donateToCampaignValidation = useFormik({
-    // enableReinitialize : use this flag when initial values needs to be changed
-    enableReinitialize: true,
+  // const donateToCampaignValidation = useFormik({
+  //   // enableReinitialize : use this flag when initial values needs to be changed
+  //   enableReinitialize: true,
 
-    initialValues: {
-      donationAmount: 0,
-    },
-    validationSchema: Yup.object({
-      donationAmount: Yup.number().required(
-        "Donation amount should be greater than 0"
-      ),
-    }),
-    onSubmit: async (values) => {
-      const newDonation = {
-        donationAmount: values.donationAmount,
-      };
+  //   initialValues: {
+  //     donationAmount: 0,
+  //   },
+  //   validationSchema: Yup.object({
+  //     donationAmount: Yup.number().required(
+  //       "Donation amount should be greater than 0"
+  //     ),
+  //   }),
+  //   onSubmit: async (values) => {
+  //     const newDonation = {
+  //       donationAmount: values.donationAmount,
+  //     };
 
-      setAmountPledged(Number(values.donationAmount));
-      console.log("amount pledged", amountPledged);
-      const donationStateOnSubmit = {
-        ...activeCampaignForDonation,
-        donationAmount: values.donationAmount,
-      };
+  //     setAmountPledged(Number(values.donationAmount));
+  //     console.log("amount pledged", amountPledged);
+  //     const donationStateOnSubmit = {
+  //       ...activeCampaignForDonation,
+  //       donationAmount: values.donationAmount,
+  //     };
 
-      setActiveCampaignForDonation(donationStateOnSubmit);
-      // save new Project Data
-      //add to local storage
-      try {
-        const config = {
-          headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWVkMDg0ZDVhM2Y4NTQ5MDlkMDIzNSIsImlhdCI6MTcyMDMyOTUzOCwiZXhwIjoxNzIwNDE1OTM4fQ.INuhl-cM2TRFttoa_scmJWHP-Ba4lWcCMIVxZyBAFoY`,
-          },
-        };
+  //     setActiveCampaignForDonation(donationStateOnSubmit);
+  //     // save new Project Data
+  //     //add to local storage
+  //     try {
+  //       const config = {
+  //         headers: {
+  //           Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWVkMDg0ZDVhM2Y4NTQ5MDlkMDIzNSIsImlhdCI6MTcyMDMyOTUzOCwiZXhwIjoxNzIwNDE1OTM4fQ.INuhl-cM2TRFttoa_scmJWHP-Ba4lWcCMIVxZyBAFoY`,
+  //         },
+  //       };
 
-        const { data } = await axios.post("/campaign", formData, config);
-        alert("photo uploaded successfully");
-      } catch (err) {
-        console.log("failed to upload photos", err);
-      }
-      donateToCampaignValidation.resetForm();
-      toggleDonateToCampaignModal();
-    },
-  });
+  //       const { data } = await axios.post("/campaign", formData, config);
+  //       alert("photo uploaded successfully");
+  //     } catch (err) {
+  //       console.log("failed to upload photos", err);
+  //     }
+  //     donateToCampaignValidation.resetForm();
+  //     toggleDonateToCampaignModal();
+  //   },
+  // });
 
   const [amountPledged, setAmountPledged] = useState(0);
 
@@ -713,6 +713,12 @@ const Home = () => {
       Dragula([componentBackingInstance], options);
     }
   };
+  console.log("amount pledged", amountPledged);
+
+  const handleChangeInputDonation = (e)=>{
+    const amount = Number(e.target.value);
+    setAmountPledged(amount);
+  }
 
   return (
     <React.Fragment>
@@ -990,7 +996,24 @@ const Home = () => {
         </ModalHeader>
         <ModalBody>
           <div id="task-error-msg" className="alert alert-danger py-2"></div>
-          <Form
+          this is a modal of enter donation amount Donation Amount:{" "}
+          <input
+            type="number"
+            name="donationAmount"
+            onChange={(e) => handleChangeInputDonation(e)}
+          />
+          <button
+            className="btn btn-primary"
+            onClick={() => {
+              checkout.show({ amount: amountPledged *100 });
+              setModalDonateToCampaign(false);
+              console.log("amouint pledged ");
+            }}
+            id="addNewTodo"
+          >
+            {!!isEdit ? "Save" : "Proceed"}
+          </button>
+          {/* <Form
             id="donateToCampaign-form"
             onSubmit={(e) => {
               console.log(
@@ -1072,7 +1095,7 @@ const Home = () => {
                 {!!isEdit ? "Save" : "Proceed"}
               </button>
             </div>
-          </Form>
+          </Form> */}
         </ModalBody>
       </Modal>
       <Modal
