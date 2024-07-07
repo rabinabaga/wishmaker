@@ -33,7 +33,7 @@ export const postLogin = async (data_input) => {
   
   const config = {
     headers: {
-      Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWVkMDg0ZDVhM2Y4NTQ5MDlkMDIzNSIsImlhdCI6MTcyMDE1NTUyNiwiZXhwIjoxNzIwMjQxOTI2fQ.Unr1EguofUxThB4y1FL-C24YIqQPwc9Hm1o3vNu5nPo`,
+      Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWVkMDg0ZDVhM2Y4NTQ5MDlkMDIzNSIsImlhdCI6MTcyMDMyOTUzOCwiZXhwIjoxNzIwNDE1OTM4fQ.INuhl-cM2TRFttoa_scmJWHP-Ba4lWcCMIVxZyBAFoY`,
       "Content-Type": "application/json",
     },
   };

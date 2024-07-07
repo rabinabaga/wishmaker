@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import KhaltiCheckout from "khalti-checkout-web";
 import {
   Col,
   Container,
@@ -54,6 +55,35 @@ import {
 
 import { createSelector } from "reselect";
 import axios from "axios";
+
+// let config = {
+//   // replace this key with yours
+//   publicKey: "test_public_key_cd1de9537cd34d3e99a786e191d7a754",
+//   productIdentity: "1234567890",
+//   productName: "Drogon",
+//   productUrl: "http://gameofthrones.com/buy/Dragons",
+//   eventHandler: {
+//     onSuccess(payload) {
+//       // hit merchant api for initiating verfication
+//       console.log(payload);
+//     },
+//     // onError handler is optional
+//     onError(error) {
+//       // handle errors
+//       console.log(error);
+//     },
+//     onClose() {
+//       console.log("widget is closing");
+//     },
+//   },
+//   paymentPreference: [
+//     "KHALTI",
+//     "EBANKING",
+//     "MOBILE_BANKING",
+//     "CONNECT_IPS",
+//     "SCT",
+//   ],
+// };
 
 const Status = ({ status }) => {
   switch (status) {
@@ -111,6 +141,9 @@ const Priority = ({ priority }) => {
 
 const Home = () => {
   const dispatch = useDispatch();
+  const [activeCampaignForDonation, setActiveCampaignForDonation] =
+    useState(null);
+  console.log("active campaign for daonation", activeCampaignForDonation);
   document.title = "To Do Lists |  - React Admin & Dashboard Template";
   const [file, setFile] = useState(null);
   const [deleteModal, setDeleteModal] = useState(false);
@@ -120,6 +153,36 @@ const Home = () => {
   const todosStore = useSelector((state) => state.TodoAsync.todosData);
 
   console.log("todos store", todosStore);
+  let config = {
+    // replace this key with yours
+    publicKey: "test_public_key_cd1de9537cd34d3e99a786e191d7a754",
+    productIdentity: activeCampaignForDonation?._id,
+    productName: activeCampaignForDonation?.campaignTitle,
+    productUrl: "http://gameofthrones.com/buy/Dragons",
+    eventHandler: {
+      onSuccess(payload) {
+        // hit merchant api for initiating verfication
+        console.log(payload);
+        console.log("hit merchat api for initiatin verification");
+      },
+      // onError handler is optional
+      onError(error) {
+        // handle errors
+        console.log(error);
+      },
+      onClose() {
+        console.log("widget is closing");
+      },
+    },
+    paymentPreference: [
+      "KHALTI",
+      "EBANKING",
+      "MOBILE_BANKING",
+      "CONNECT_IPS",
+      "SCT",
+    ],
+  };
+  let checkout = new KhaltiCheckout(config);
 
   console.log("campaigns store", campaignStore);
   const projects = useSelector((state) => state.TodoAsync.projectsDataAsync);
@@ -144,6 +207,7 @@ const Home = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [todo, setTodo] = useState(null);
   const [campaign, setCampaign] = useState(null);
+  const [donationState, setDonationState] = useState(null);
   // Projects
   const [modalProject, setModalProject] = useState(false);
 
@@ -151,6 +215,7 @@ const Home = () => {
   // To dos
   const [modalTodo, setModalTodo] = useState(false);
   const [modalCampaign, setModalCampaign] = useState(false);
+  const [modalDonateToCampaign, setModalDonateToCampaign] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
 
   useEffect(() => {
@@ -196,6 +261,14 @@ const Home = () => {
   //     setModalCampaign(true);
   //   }
   // }, [modalCampaign]);
+  const toggleDonateToCampaignModal = useCallback(() => {
+    if (modalDonateToCampaign) {
+      setModalDonateToCampaign(false);
+      setCampaign(null);
+    } else {
+      setModalDonateToCampaign(true);
+    }
+  }, [modalCampaign]);
 
   const [campaignDataPost, setcampaignDataPost] = useState(null);
   const toggleCampaignModal = () => setModalCampaign(!modalCampaign);
@@ -235,6 +308,13 @@ const Home = () => {
     setModalCampaign(!modalCampaign);
     setIsEdit(false);
     toggleCampaignModal();
+  };
+  // Add To do
+  const handleDonateToCampaignClicks = () => {
+    setDonationState("");
+    setModalDonateToCampaign(!modalDonateToCampaign);
+    setIsEdit(false);
+    toggleDonateToCampaignModal();
   };
 
   // Delete To do
@@ -364,6 +444,51 @@ const Home = () => {
       toggleProject();
     },
   });
+  const donateToCampaignValidation = useFormik({
+    // enableReinitialize : use this flag when initial values needs to be changed
+    enableReinitialize: true,
+
+    initialValues: {
+      donationAmount: 0,
+    },
+    validationSchema: Yup.object({
+      donationAmount: Yup.number().required(
+        "Donation amount should be greater than 0"
+      ),
+    }),
+    onSubmit: async (values) => {
+      const newDonation = {
+        donationAmount: values.donationAmount,
+      };
+
+      setAmountPledged(Number(values.donationAmount));
+      console.log("amount pledged", amountPledged);
+      const donationStateOnSubmit = {
+        ...activeCampaignForDonation,
+        donationAmount: values.donationAmount,
+      };
+
+      setActiveCampaignForDonation(donationStateOnSubmit);
+      // save new Project Data
+      //add to local storage
+      try {
+        const config = {
+          headers: {
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWVkMDg0ZDVhM2Y4NTQ5MDlkMDIzNSIsImlhdCI6MTcyMDMyOTUzOCwiZXhwIjoxNzIwNDE1OTM4fQ.INuhl-cM2TRFttoa_scmJWHP-Ba4lWcCMIVxZyBAFoY`,
+          },
+        };
+
+        const { data } = await axios.post("/campaign", formData, config);
+        alert("photo uploaded successfully");
+      } catch (err) {
+        console.log("failed to upload photos", err);
+      }
+      donateToCampaignValidation.resetForm();
+      toggleDonateToCampaignModal();
+    },
+  });
+
+  const [amountPledged, setAmountPledged] = useState(0);
 
   // To do Task List validation
   // To do Task List validation
@@ -505,16 +630,11 @@ const Home = () => {
         try {
           const config = {
             headers: {
-              "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWVkMDg0ZDVhM2Y4NTQ5MDlkMDIzNSIsImlhdCI6MTcyMDE1NTUyNiwiZXhwIjoxNzIwMjQxOTI2fQ.Unr1EguofUxThB4y1FL-C24YIqQPwc9Hm1o3vNu5nPo`,
-             
+              Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWVkMDg0ZDVhM2Y4NTQ5MDlkMDIzNSIsImlhdCI6MTcyMDMyOTUzOCwiZXhwIjoxNzIwNDE1OTM4fQ.INuhl-cM2TRFttoa_scmJWHP-Ba4lWcCMIVxZyBAFoY`,
             },
           };
 
-          const { data } = await axios.post(
-            "/campaign",
-            formData,
-            config
-          );
+          const { data } = await axios.post("/campaign", formData, config);
           alert("photo uploaded successfully");
         } catch (err) {
           console.log("failed to upload photos", err);
@@ -704,7 +824,13 @@ const Home = () => {
                             </h6>{" "}
                           </p>
                           <p>Started By: {item.campaigner_id.name}</p>
-                          <button className="btn btn-primary">
+                          <button
+                            className="btn btn-primary"
+                            onClick={() => {
+                              handleDonateToCampaignClicks();
+                              setActiveCampaignForDonation(item);
+                            }}
+                          >
                             Donate Now
                           </button>
                         </div>
@@ -717,6 +843,190 @@ const Home = () => {
           </div>
         </Container>
       </div>
+
+      {/* Projects */}
+      <Modal
+        id="createProjectModal"
+        isOpen={modalProject}
+        toggle={() => setModalProject(!modalProject)}
+        modalClassName="zoomIn"
+        tabIndex="-1"
+        centered
+      >
+        <ModalHeader
+          toggle={() => setModalProject(!modalProject)}
+          className="p-3 bg-success-subtle"
+          id="createProjectModalLabel"
+        >
+          Create Project
+        </ModalHeader>
+        <ModalBody>
+          <form
+            className="needs-validation createProject-form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              projectValidation.handleSubmit();
+              return false;
+            }}
+          >
+            <div className="mb-4">
+              <label htmlFor="projectname-input" className="form-label">
+                Project Name
+              </label>
+              <Input
+                type="text"
+                className="form-control"
+                id="projectname-input"
+                name="title"
+                placeholder="Enter project name"
+                validate={{
+                  required: { value: true },
+                }}
+                onChange={projectValidation.handleChange}
+                onBlur={projectValidation.handleBlur}
+                value={projectValidation.values.title || ""}
+                invalid={
+                  projectValidation.touched.title &&
+                  projectValidation.errors.title
+                    ? true
+                    : false
+                }
+              />
+              {projectValidation.touched.title &&
+              projectValidation.errors.title ? (
+                <FormFeedback type="invalid">
+                  {projectValidation.errors.title}
+                </FormFeedback>
+              ) : null}
+              <input
+                type="hidden"
+                className="form-control"
+                id="projectid-input"
+                value=""
+              />
+            </div>
+            <div className="hstack gap-2 justify-content-end">
+              <button
+                type="button"
+                className="btn btn-ghost-success"
+                onClick={() => setModalProject(false)}
+              >
+                <i className="ri-close-line align-bottom"></i> Close
+              </button>
+              <button
+                type="submit"
+                className="btn btn-primary"
+                id="addNewProject"
+              >
+                Add Project
+              </button>
+            </div>
+          </form>
+        </ModalBody>
+      </Modal>
+      <Modal
+        id="donateToCampaign"
+        isOpen={modalDonateToCampaign}
+        toggle={toggleDonateToCampaignModal}
+        modalClassName="zoomIn"
+        centered
+        tabIndex="-1"
+      >
+        <ModalHeader
+          toggle={toggleDonateToCampaignModal}
+          className="p-3 bg-success-subtle"
+        >
+          {" "}
+          {!!isEdit ? "Edit Donate to Campaign" : "Donate to Campaign"}{" "}
+        </ModalHeader>
+        <ModalBody>
+          <div id="task-error-msg" className="alert alert-danger py-2"></div>
+          <Form
+            id="donateToCampaign-form"
+            onSubmit={(e) => {
+              console.log(
+                "here in submit campaign",
+                donateToCampaignValidation.values
+              );
+              e.preventDefault();
+              donateToCampaignValidation.handleSubmit();
+              return false;
+            }}
+          >
+            <p>
+              {" "}
+              <label htmlFor="task-title-input" className="form-label">
+                Cause you have selected:{" "}
+              </label>
+              <h6 className="fs-18 fw-semibold">
+                {" "}
+                {activeCampaignForDonation?.campaignTitle}
+              </h6>{" "}
+            </p>
+            <p>
+              {" "}
+              <label htmlFor="task-title-input" className="form-label">
+                Total Goal Set:
+              </label>
+              <h6 className="fs-18 fw-semibold">
+                {" "}
+                {activeCampaignForDonation?.goalAmount}
+              </h6>{" "}
+            </p>
+            <input type="hidden" id="taskid-input" className="form-control" />
+            <div className="mb-3">
+              <label htmlFor="task-title-input" className="form-label">
+                I want to donate
+              </label>
+              <Input
+                type="number"
+                id="task-title-input"
+                className="form-control"
+                placeholder="Enter Amount to Donate"
+                name="donationAmount"
+                validate={{ required: { value: true } }}
+                onChange={donateToCampaignValidation.handleChange}
+                onBlur={donateToCampaignValidation.handleBlur}
+                value={donateToCampaignValidation.values.donationAmount || ""}
+                invalid={
+                  donateToCampaignValidation.touched.donationAmount &&
+                  donateToCampaignValidation.errors.donationAmount
+                    ? true
+                    : false
+                }
+              />
+              {donateToCampaignValidation.touched.donationAmount &&
+              donateToCampaignValidation.errors.donationAmount ? (
+                <FormFeedback type="invalid">
+                  {donateToCampaignValidation.errors.donationAmount}
+                </FormFeedback>
+              ) : null}
+            </div>
+            <div className="hstack gap-2 justify-content-end">
+              <button
+                type="button"
+                className="btn btn-ghost-success"
+                onClick={() => setModalDonateToCampaign(false)}
+              >
+                <i className="ri-close-fill align-bottom"></i> Close
+              </button>
+              <button
+                type="submit"
+                className="btn btn-primary"
+                onClick={() => {
+                  checkout.show({ amount: 1000});
+
+                  setModalDonateToCampaign(false);
+                  console.log("amouint pledged ");
+                }}
+                id="addNewTodo"
+              >
+                {!!isEdit ? "Save" : "Proceed"}
+              </button>
+            </div>
+          </Form>
+        </ModalBody>
+      </Modal>
       <Modal
         id="createCampaign"
         isOpen={modalCampaign}
@@ -830,87 +1140,6 @@ const Home = () => {
               </button>
             </div>
           </Form>
-        </ModalBody>
-      </Modal>
-
-      {/* Projects */}
-      <Modal
-        id="createProjectModal"
-        isOpen={modalProject}
-        toggle={() => setModalProject(!modalProject)}
-        modalClassName="zoomIn"
-        tabIndex="-1"
-        centered
-      >
-        <ModalHeader
-          toggle={() => setModalProject(!modalProject)}
-          className="p-3 bg-success-subtle"
-          id="createProjectModalLabel"
-        >
-          Create Project
-        </ModalHeader>
-        <ModalBody>
-          <form
-            className="needs-validation createProject-form"
-            onSubmit={(e) => {
-              e.preventDefault();
-              projectValidation.handleSubmit();
-              return false;
-            }}
-          >
-            <div className="mb-4">
-              <label htmlFor="projectname-input" className="form-label">
-                Project Name
-              </label>
-              <Input
-                type="text"
-                className="form-control"
-                id="projectname-input"
-                name="title"
-                placeholder="Enter project name"
-                validate={{
-                  required: { value: true },
-                }}
-                onChange={projectValidation.handleChange}
-                onBlur={projectValidation.handleBlur}
-                value={projectValidation.values.title || ""}
-                invalid={
-                  projectValidation.touched.title &&
-                  projectValidation.errors.title
-                    ? true
-                    : false
-                }
-              />
-              {projectValidation.touched.title &&
-              projectValidation.errors.title ? (
-                <FormFeedback type="invalid">
-                  {projectValidation.errors.title}
-                </FormFeedback>
-              ) : null}
-              <input
-                type="hidden"
-                className="form-control"
-                id="projectid-input"
-                value=""
-              />
-            </div>
-            <div className="hstack gap-2 justify-content-end">
-              <button
-                type="button"
-                className="btn btn-ghost-success"
-                onClick={() => setModalProject(false)}
-              >
-                <i className="ri-close-line align-bottom"></i> Close
-              </button>
-              <button
-                type="submit"
-                className="btn btn-primary"
-                id="addNewProject"
-              >
-                Add Project
-              </button>
-            </div>
-          </form>
         </ModalBody>
       </Modal>
     </React.Fragment>
