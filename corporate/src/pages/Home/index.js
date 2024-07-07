@@ -189,26 +189,30 @@ const Home = () => {
         //   })
         // );
         // console.log("response form confirm");
-          // const headersList = {
-          //   Authorization: `Key `,
-          //   "Content-Type": "application/json",
-          // };
-           try {
-             const config = {
-               headers: {
-                 Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWVkMDg0ZDVhM2Y4NTQ5MDlkMDIzNSIsImlhdCI6MTcyMDMyOTUzOCwiZXhwIjoxNzIwNDE1OTM4fQ.INuhl-cM2TRFttoa_scmJWHP-Ba4lWcCMIVxZyBAFoY`,
-                 "Content-Type": "application/json",
-               },
-             };
+        // const headersList = {
+        //   Authorization: `Key `,
+        //   "Content-Type": "application/json",
+        // };
+        try {
+          const config = {
+            headers: {
+              Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWVkMDg0ZDVhM2Y4NTQ5MDlkMDIzNSIsImlhdCI6MTcyMDMyOTUzOCwiZXhwIjoxNzIwNDE1OTM4fQ.INuhl-cM2TRFttoa_scmJWHP-Ba4lWcCMIVxZyBAFoY`,
+              "Content-Type": "application/json",
+            },
+          };
 
-             const { result } = await axios.post("/campaign/verify-donation",{amount:payload.amount, token:payload.token}, config);
-             if(result){
-              navigate("/home");
-              alert("donation successful");
-             }
-           } catch (err) {
-             console.log("failed to upload photos", err);
-           }
+          const { result } = await axios.post(
+            "/campaign/verify-donation",
+            { amount: payload.amount, token: payload.token },
+            config
+          );
+          if (result) {
+            navigate("/home");
+            alert("donation successful");
+          }
+        } catch (err) {
+          console.log("failed to upload photos", err);
+        }
       },
       // onError handler is optional
       onError(error) {
@@ -1059,8 +1063,7 @@ const Home = () => {
                 type="submit"
                 className="btn btn-primary"
                 onClick={() => {
-                  checkout.show({ amount: 1000});
-
+                  checkout.show({ amount: 100 });
                   setModalDonateToCampaign(false);
                   console.log("amouint pledged ");
                 }}

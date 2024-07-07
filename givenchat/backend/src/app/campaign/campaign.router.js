@@ -1,10 +1,12 @@
 const router = require('express').Router();
 // const GamePlanModel = require('./game_plan.model');
+const ValidateRequest = require("../../middlewares/validate.request");
+
 const upload = require("../../upload");
 const campaignCtrl = require('./campaign.controller');
 const checkAuthentication = require("../../middlewares/auth.middleware");
 
-
+const {donationMadeSchema} = require("./campaign.validator")
 // const checkPermission = require("../../middlewares/rbac.middleware")
 
 //   router.post(
@@ -21,7 +23,7 @@ router.post(
 );
 router.post(
   "/verify-donation",
-  
+  ValidateRequest(donationMadeSchema),
   checkAuthentication,
   campaignCtrl.verfiyPayment
 );
