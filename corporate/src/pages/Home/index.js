@@ -996,7 +996,6 @@ const Home = () => {
         </ModalHeader>
         <ModalBody>
           <div id="task-error-msg" className="alert alert-danger py-2"></div>
-          this is a modal of enter donation amount Donation Amount:{" "}
           <input
             type="number"
             name="donationAmount"
