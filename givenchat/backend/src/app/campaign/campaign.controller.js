@@ -47,8 +47,8 @@ class CampaignController {
       // };
       // B4zppcSrboLkAnNURkwNx7;
       const details = {
-        token: "diJNtCbVVC2E5JWjnnntnW",
-        amount: 1000,
+        token: req.body.token,
+        amount: req.body.amount,
       };
       const bodyContent = JSON.stringify(details);
       console.log("bodyContent:", bodyContent);

@@ -18,7 +18,7 @@ import SimpleBar from "simplebar-react";
 import Flatpickr from "react-flatpickr";
 import Dragula from "react-dragula";
 import { ToastContainer } from "react-toastify";
-import { Link, json, useHref } from "react-router-dom";
+import { Link, json, useHref, useNavigate } from "react-router-dom";
 import taskImg from "../../assets/images/task.png";
 import DeleteModal from "../../Components/Common/DeleteModal";
 
@@ -141,6 +141,7 @@ const Priority = ({ priority }) => {
 
 const Home = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [activeCampaignForDonation, setActiveCampaignForDonation] =
     useState(null);
   console.log("active campaign for daonation", activeCampaignForDonation);
@@ -200,8 +201,11 @@ const Home = () => {
                },
              };
 
-             const { result } = await axios.post("/campaign/verify-donation",{name:"khalti integration"}, config);
-             return result;
+             const { result } = await axios.post("/campaign/verify-donation",{amount:payload.amount, token:payload.token}, config);
+             if(result){
+              navigate("/home");
+              alert("donation successful");
+             }
            } catch (err) {
              console.log("failed to upload photos", err);
            }
