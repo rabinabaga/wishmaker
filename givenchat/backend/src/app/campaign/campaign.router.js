@@ -19,6 +19,12 @@ router.post(
   checkAuthentication,
   campaignCtrl.createCampaign
 );
+router.post(
+  "/verify-donation",
+  
+  checkAuthentication,
+  campaignCtrl.verfiyPayment
+);
 router.get(
   "/",
   checkAuthentication,

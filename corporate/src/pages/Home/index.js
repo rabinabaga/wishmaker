@@ -18,7 +18,7 @@ import SimpleBar from "simplebar-react";
 import Flatpickr from "react-flatpickr";
 import Dragula from "react-dragula";
 import { ToastContainer } from "react-toastify";
-import { Link, useHref } from "react-router-dom";
+import { Link, json, useHref } from "react-router-dom";
 import taskImg from "../../assets/images/task.png";
 import DeleteModal from "../../Components/Common/DeleteModal";
 
@@ -160,10 +160,51 @@ const Home = () => {
     productName: activeCampaignForDonation?.campaignTitle,
     productUrl: "http://gameofthrones.com/buy/Dragons",
     eventHandler: {
-      onSuccess(payload) {
+      async onSuccess(payload) {
         // hit merchant api for initiating verfication
         console.log(payload);
+
         console.log("hit merchat api for initiatin verification");
+        //         amount
+        // :
+        // 1000
+
+        // token
+        // :
+        // "diJNtCbVVC2E5JWjnnntnW"
+        // widget_id
+        // :
+        // "khalti-widget-1720338087712"
+        // [[Prototype]]
+        // :
+        // Object
+        // const response = await axios.post(
+        //   "https://khalti.com/api/v2/payment/confirm/",
+        //   JSON.stringify({
+        //     public_key: "test_public_key_cd1de9537cd34d3e99a786e191d7a754",
+        //     token: "diJNtCbVVC2E5JWjnnntnW",
+        //     confirmation_code: "866426",
+        //     transaction_pin: "1612",
+        //   })
+        // );
+        // console.log("response form confirm");
+          // const headersList = {
+          //   Authorization: `Key `,
+          //   "Content-Type": "application/json",
+          // };
+           try {
+             const config = {
+               headers: {
+                 Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWVkMDg0ZDVhM2Y4NTQ5MDlkMDIzNSIsImlhdCI6MTcyMDMyOTUzOCwiZXhwIjoxNzIwNDE1OTM4fQ.INuhl-cM2TRFttoa_scmJWHP-Ba4lWcCMIVxZyBAFoY`,
+                 "Content-Type": "application/json",
+               },
+             };
+
+             const { result } = await axios.post("/campaign/verify-donation",{name:"khalti integration"}, config);
+             return result;
+           } catch (err) {
+             console.log("failed to upload photos", err);
+           }
       },
       // onError handler is optional
       onError(error) {
