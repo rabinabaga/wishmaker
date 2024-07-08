@@ -7,7 +7,7 @@ const api = new APIClient();
 
 export const postGamePlan = async (data) => {
   console.log("data in post gaem plan", data);
-  const result = sessionStorage.getItem("authUser");
+  const result = localStorage.getItem("authUser");
 
   const result1 = JSON.parse(result);
 
@@ -30,7 +30,6 @@ export const getAllGamePlans = () => api.get(url.GET_ALL_GAME_PLANS);
 
 // Login Method
 export const postLogin = async (data_input) => {
-  
   const config = {
     headers: {
       Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWVkMDg0ZDVhM2Y4NTQ5MDlkMDIzNSIsImlhdCI6MTcyMDQxODA0OCwiZXhwIjoxNzIzMDEwMDQ4fQ.uDBop9w3yZ0yeO6KYCCtAvRkRJCANfZTen8-VhyViYE`,

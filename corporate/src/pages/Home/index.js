@@ -110,6 +110,7 @@ const Home = () => {
           "noopener, noreferrer"
         );
       }
+      // https://example.com/?pidx=99vVcWZYZyHmVzhnVDDaaT&transaction_id=Kv8DFsq36LrCaNuGRHJ5oA&tidx=Kv8DFsq36LrCaNuGRHJ5oA&amount=1000&total_amount=1000&mobile=98XXXXX002&status=Completed&purchase_order_id=668ba16a14193da02ffda907&purchase_order_name=test
     } catch (err) {
       console.log("failed to donate photos", err);
     }

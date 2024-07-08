@@ -15,6 +15,11 @@ const DonationSchema = new mongoose.Schema(
       min: 2,
       max: 2000000,
     },
+    transactionId: {
+      type: String,
+      min: 2,
+      max: 2000000,
+    },
     pidx: {
       type: String,
       min: 2,

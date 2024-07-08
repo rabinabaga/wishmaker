@@ -11,6 +11,8 @@ const routes = require("../routes");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.json());
+// Middleware to parse URL-encoded data
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 // app.use(express.static("public"));
 

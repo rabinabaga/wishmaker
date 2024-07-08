@@ -35,6 +35,19 @@ class DonationController {
     };
     res.json(data);
   }
+
+  async handlePayment(req, res, next) {
+    console.log("req.body in initialize donation", req.body);
+    // Extract query parameters from the request
+    const response = await donationSvc.handlePayment(req);
+    console.log("response in handle data", response);
+    const data = {
+      result: { donationData: response },
+      meta: null,
+      msg: "donation" + response.status,
+    };
+    res.redirect("http://localhost:3000/home");
+  }
   async deleteGamePlan(req, res, next) {
     try {
       let result = await gamePlanSvc.deleteGamePlan(req);

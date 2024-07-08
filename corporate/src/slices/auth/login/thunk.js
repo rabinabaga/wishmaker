@@ -24,7 +24,7 @@ export const loginUser = (user, history) => async (dispatch) => {
     var data = await response;
 
     if (data) {
-      sessionStorage.setItem("authUser", JSON.stringify(data));
+      localStorage.setItem("authUser", JSON.stringify(data));
 
       dispatch(loginSuccess(data));
       history("/home");
@@ -41,7 +41,7 @@ export const loginUserAdmin = (user, history) => async (dispatch) => {
     var data = await response;
 
     if (data) {
-      sessionStorage.setItem("authUser", JSON.stringify(data));
+      localStorage.setItem("authUser", JSON.stringify(data));
 
       dispatch(loginSuccess(data));
       history("/dashboard");
@@ -53,7 +53,7 @@ export const loginUserAdmin = (user, history) => async (dispatch) => {
 
 export const logoutUser = () => async (dispatch) => {
   try {
-    sessionStorage.removeItem("authUser");
+    localStorage.removeItem("authUser");
     let fireBaseBackend = getFirebaseBackend();
     if (process.env.REACT_APP_DEFAULTAUTH === "firebase") {
       const response = fireBaseBackend.logout;
@@ -80,7 +80,7 @@ export const socialLogin = (type, history) => async (dispatch) => {
 
     const socialdata = await response;
     if (socialdata) {
-      sessionStorage.setItem("authUser", JSON.stringify(response));
+      localStorage.setItem("authUser", JSON.stringify(response));
       dispatch(loginSuccess(response));
       history("/dashboard");
     }

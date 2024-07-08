@@ -8,10 +8,8 @@ import GetThingsDone from "../pages/GetThingsDone";
 import Login from "../pages/Authentication/Login";
 import Dashboard from "../pages/Dashboard";
 import Home from "../pages/Home";
-import RedirectTestKhaltiComponent from "../pages/RedirectTestKhaltiComponent";
 const authProtectedRoutes = [
   { path: "/home", component: <Home /> },
-  { path: "/test-khalti/:path", component: <RedirectTestKhaltiComponent /> },
   { path: "/your-businesses", component: <YourBusinesses /> },
   { path: "/your-businesses-redux", component: <YourBusinessesRedux /> },
   {

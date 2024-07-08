@@ -27,8 +27,9 @@ class DonationService {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          return_url: "http://example.com/",
-          website_url: "https://example.com/",
+          return_url: "http://localhost:8001/api/v1/donation/payment-callback/",
+          website_url:
+            "http://localhost:3000",
           amount: "1000",
           purchase_order_id: result._id,
           purchase_order_name: "test",
@@ -79,6 +80,30 @@ class DonationService {
       console.log("exception", exception);
       throw exception;
     }
+  }
+
+  async handlePayment(req){
+     const query = req.query;
+    console.log("query", query);
+     // Get specific values
+     const pidx = query.pidx;
+
+     const transactionId = query.transaction_id;
+     const amount = query.amount;
+     const status = query.status;
+
+       if(status==="Completed"){
+        const updatedDonation = await DonationModel.findOneAndUpdate(
+          { pidx: pidx }, // Filter criteria
+          { $set: { transactionId: transactionId, status: "COMPLETED" } }, // Update operation
+          { new: true } // Options: `new: true` returns the updated document
+        );
+          return updatedDonation;
+       }else{
+        return "donation failed"
+       }
+
+     
   }
 
   listAllCampaigns = async (filter = {}, paging = { skip: 0, limit: 8 }) => {
