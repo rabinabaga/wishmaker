@@ -10,10 +10,6 @@ router.post(
   checkAuthentication,
   donationCtrl.initializeDonation
 );
-router.post(
-  "/create-donation",
-  checkAuthentication,
-  donationCtrl.createDonation
-);
+
 
 module.exports = router;

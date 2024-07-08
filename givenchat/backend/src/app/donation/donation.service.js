@@ -1,3 +1,4 @@
+const CampaignModel = require("../campaign/campaign.model");
 const DonationModel = require("./donation.model");
 const request = require("request-promise");
 
@@ -12,6 +13,8 @@ class DonationService {
       donorId: req.authUser._id,
       status: "PENDING",
     });
+
+    const campaign = await CampaignModel.findById(req.body.campaignId);
 
     try {
       const result = await newDonation.save();
@@ -51,8 +54,8 @@ class DonationService {
       console.log("response from khalti", response);
       const resultForFrontend = {
         responseFromKhalti: response,
-        campaignId: req.campaignId,
-        donationAmount: req.donationAmount,
+        campaign:campaign,
+        donationAmount: req.body.donationAmount,
       };
       return resultForFrontend;
     } catch (exception) {
