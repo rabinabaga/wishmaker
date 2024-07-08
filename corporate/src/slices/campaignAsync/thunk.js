@@ -6,7 +6,7 @@ export const getCampaignsPageAsync = createAsyncThunk(
     try {
       const config = {
         headers: {
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWVkMDg0ZDVhM2Y4NTQ5MDlkMDIzNSIsImlhdCI6MTcyMDMyOTUzOCwiZXhwIjoxNzIwNDE1OTM4fQ.INuhl-cM2TRFttoa_scmJWHP-Ba4lWcCMIVxZyBAFoY`,
+          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWVkMDg0ZDVhM2Y4NTQ5MDlkMDIzNSIsImlhdCI6MTcyMDQwNTM2OSwiZXhwIjoxNzIyOTk3MzY5fQ.PoBnUH_M5MflKBD3QwOEF55pvQMt3LWGw5SBbwcWLn4`,
           "Content-Type": "application/json",
         },
       };

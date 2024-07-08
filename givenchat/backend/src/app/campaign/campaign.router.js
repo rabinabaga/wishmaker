@@ -22,10 +22,9 @@ router.post(
   campaignCtrl.createCampaign
 );
 router.post(
-  "/verify-donation",
-  ValidateRequest(donationMadeSchema),
+  "/initialize-donation",
   checkAuthentication,
-  campaignCtrl.verfiyPayment
+  campaignCtrl.initializeDonation
 );
 router.get(
   "/",

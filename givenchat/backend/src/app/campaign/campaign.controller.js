@@ -1,7 +1,8 @@
 // const UserModel = require("../auth/user.model");
 // const GamePlanModel = require("./game_plan.model");
 const campaignSvc = require("./campaign.service.js");
-const axios = require("axios")
+const axios = require("axios");
+const request = require("request");
 
 class CampaignController {
   //   gamePlanSvc;
@@ -22,48 +23,39 @@ class CampaignController {
       next(exception);
     }
   }
-  
-  async verfiyPayment(req, res, next) {
+
+  async initializeDonation(req, res, next) {
     console.log("req.body in verify payment", req.body);
-    try {
-  
-      const headersList = {
-        Authorization: `Key test_secret_key_99adeadf717c4f30861b4c27be5c15c0`,
+
+    const options = {
+      method: "POST",
+      url: "https://a.khalti.com/api/v2/epayment/initiate/",
+      headers: {
+        Authorization: "key live_secret_key_68791341fdd94846a146f0457ff7b455",
         "Content-Type": "application/json",
-      };
+      },
+      body: JSON.stringify({
+        return_url: "http://example.com/",
+        website_url: "https://example.com/",
+        amount: "1000",
+        purchase_order_id: "Order01",
+        purchase_order_name: "test",
+        customer_info: {
+          name: "Ram Bahadur",
+          email: "test@khalti.com",
+          phone: "9800000001",
+        },
+      }),
+    };
+    request(options, function (error, response) {
+      if (error) throw new Error(error);
+      console.log(response.body, "body");
+    });
 
-      const details = {
-        token: req.body.token,
-        amount: req.body.amount,
-      };
-      const bodyContent = JSON.stringify(details);
-      console.log("bodyContent:", bodyContent);
-
-      const reqOptions = {
-        url: "https://khalti.com/api/v2/payment/verify/",
-        method: "POST",
-        headers: headersList,
-        data: bodyContent,
-      };
-     try {
-        const response = await axios.request(reqOptions);
-        const data = await response;
-        // return data;
-         res.json({
-           result: data.data.amount,
-           message: "donated successfully",
-           meta: null,
-         });
-      } catch (error) {
-        console.error(
-          "Error initializing Khalti payment:",
-          error.response ? error.response.data : error.message
-        );
-        throw error;
-      }
-    } catch (exception) {
-      next(exception);
-    }
+    // const response = await axios.post(options.url, options.body, {
+    //   headers: options.headers,
+    // });
+    // console.log("response in c", response);
   }
   async deleteGamePlan(req, res, next) {
     try {
