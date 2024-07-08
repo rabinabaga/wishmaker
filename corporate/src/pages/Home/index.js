@@ -57,6 +57,10 @@ const Home = () => {
     (state) => state.CampaignsAsync.campaignsDataAsync
   );
 
+  const handleDonateToCampaignClicks = () => {
+
+  };
+
   let formData = new FormData();
   const handleFileChange = (e) => {
     console.log(e.target.files[0]);
@@ -72,9 +76,31 @@ const Home = () => {
     console.log("in dispatch get campaigns");
     dispatch(getCampaignsPageAsync());
   }, []);
-
+  const [donateModal, setDonateModal] = useState(false);
   const [campaignDataPost, setcampaignDataPost] = useState(null);
+  const toggleDonateModal = () => setDonateModal(!donateModal);
   const toggleCampaignModal = () => setModalCampaign(!modalCampaign);
+  const handleDonate = async () => {
+    //axios call
+    //details: campaign_id, amountpledged, 
+    try {
+      const details = {
+        campaignId:activeCampaignForDonation._id,
+        donationAmount:amountPledged
+      }
+        const config = {
+          headers: {
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWVkMDg0ZDVhM2Y4NTQ5MDlkMDIzNSIsImlhdCI6MTcyMDQxODA0OCwiZXhwIjoxNzIzMDEwMDQ4fQ.uDBop9w3yZ0yeO6KYCCtAvRkRJCANfZTen8-VhyViYE`,
+          },
+        };
+
+        const response = await axios.post("/donation/initialize-donation", details, config);
+        console.log("data in handleDonate", response);
+      } catch (err) {
+        console.log("failed to donate photos", err);
+      }
+
+  }
 
   // Add To do
   const handleTodoClicks = () => {
@@ -85,6 +111,7 @@ const Home = () => {
   };
 
   const [amountPledged, setAmountPledged] = useState(0);
+  console.log("amount pledged", amountPledged);
 
   const campaignValidation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
@@ -108,13 +135,10 @@ const Home = () => {
 
       setcampaignDataPost(formData);
 
-      // dispatch(addTodoTodoPageAsync(newCampaign));
-      // save new Folder
-      // dispatch(addTodoTodoPageAsync(newCampaign));
       try {
         const config = {
           headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWVkMDg0ZDVhM2Y4NTQ5MDlkMDIzNSIsImlhdCI6MTcyMDQwNTM2OSwiZXhwIjoxNzIyOTk3MzY5fQ.PoBnUH_M5MflKBD3QwOEF55pvQMt3LWGw5SBbwcWLn4`,
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWVkMDg0ZDVhM2Y4NTQ5MDlkMDIzNSIsImlhdCI6MTcyMDQxODA0OCwiZXhwIjoxNzIzMDEwMDQ4fQ.uDBop9w3yZ0yeO6KYCCtAvRkRJCANfZTen8-VhyViYE`,
           },
         };
 
@@ -277,6 +301,7 @@ const Home = () => {
                           <button
                             className="btn btn-primary"
                             onClick={() => {
+                              setDonateModal(!donateModal);
                               handleDonateToCampaignClicks();
                               setActiveCampaignForDonation(item);
                             }}
@@ -410,6 +435,143 @@ const Home = () => {
               </button>
             </div>
           </Form>
+        </ModalBody>
+      </Modal>
+      <Modal
+        id="donateToCampaign"
+        isOpen={donateModal}
+        toggle={toggleDonateModal}
+        modalClassName="zoomIn"
+        centered
+        tabIndex="-1"
+      >
+        <ModalHeader
+          toggle={toggleDonateModal}
+          className="p-3 bg-success-subtle"
+        >
+          {" "}
+          {!!isEdit ? "Edit Donate to Campaign" : "Donate to Campaign"}{" "}
+        </ModalHeader>
+        <ModalBody>
+          <div id="task-error-msg" className="alert alert-danger py-2"></div>
+          <p>
+            {" "}
+            <label htmlFor="task-title-input" className="form-label">
+              Cause you have selected:{" "}
+            </label>
+            <h6 className="fs-18 fw-semibold">
+              {" "}
+              {activeCampaignForDonation?.campaignTitle}
+            </h6>{" "}
+          </p>
+          <p>
+            {" "}
+            <label htmlFor="task-title-input" className="form-label">
+              Total Goal Set:
+            </label>
+            <h6 className="fs-18 fw-semibold">
+              {" "}
+              {activeCampaignForDonation?.goalAmount}
+            </h6>{" "}
+          </p>
+          <input
+            type="number"
+            name="donationAmount"
+            onChange={(e) => setAmountPledged(e.target.value)}
+          />
+          <button
+            className="btn btn-primary"
+            onClick={() => {
+              setDonateModal(false);
+              handleDonate();
+            }}
+          
+          >
+            {!!isEdit ? "Save" : "Proceed"}
+          </button>
+          {/* <Form
+            id="donateToCampaign-form"
+            onSubmit={(e) => {
+              console.log(
+                "here in submit campaign",
+                donateToCampaignValidation.values
+              );
+              e.preventDefault();
+              donateToCampaignValidation.handleSubmit();
+              return false;
+            }}
+          >
+            <p>
+              {" "}
+              <label htmlFor="task-title-input" className="form-label">
+                Cause you have selected:{" "}
+              </label>
+              <h6 className="fs-18 fw-semibold">
+                {" "}
+                {activeCampaignForDonation?.campaignTitle}
+              </h6>{" "}
+            </p>
+            <p>
+              {" "}
+              <label htmlFor="task-title-input" className="form-label">
+                Total Goal Set:
+              </label>
+              <h6 className="fs-18 fw-semibold">
+                {" "}
+                {activeCampaignForDonation?.goalAmount}
+              </h6>{" "}
+            </p>
+            <input type="hidden" id="taskid-input" className="form-control" />
+            <div className="mb-3">
+              <label htmlFor="task-title-input" className="form-label">
+                I want to donate
+              </label>
+              <Input
+                type="number"
+                id="task-title-input"
+                className="form-control"
+                placeholder="Enter Amount to Donate"
+                name="donationAmount"
+                validate={{ required: { value: true } }}
+                onChange={donateToCampaignValidation.handleChange}
+                onBlur={donateToCampaignValidation.handleBlur}
+                value={donateToCampaignValidation.values.donationAmount || ""}
+                invalid={
+                  donateToCampaignValidation.touched.donationAmount &&
+                  donateToCampaignValidation.errors.donationAmount
+                    ? true
+                    : false
+                }
+              />
+              {donateToCampaignValidation.touched.donationAmount &&
+              donateToCampaignValidation.errors.donationAmount ? (
+                <FormFeedback type="invalid">
+                  {donateToCampaignValidation.errors.donationAmount}
+                </FormFeedback>
+              ) : null}
+            </div>
+            <div className="hstack gap-2 justify-content-end">
+              <button
+                type="button"
+                className="btn btn-ghost-success"
+                onClick={() => setModalDonateToCampaign(false)}
+              >
+                <i className="ri-close-fill align-bottom"></i> Close
+              </button>
+              <button
+                type="submit"
+                className="btn btn-primary"
+                onClick={() => {
+                  checkout.show({ amount: 100 });
+                  setModalDonateToCampaign(false);
+                  console.log("amouint pledged ");
+                }}
+                id="addNewTodo"
+              >
+                {!!isEdit ? "Save" : "Proceed"}
+              </button>
+            </div>
+          </Form> */}
         </ModalBody>
       </Modal>
     </React.Fragment>

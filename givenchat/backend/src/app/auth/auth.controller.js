@@ -19,7 +19,7 @@ class AuthController{
 
             if(userFromDb.password===req.body.password){
                 console.log("generate token");
-                var token = jwt.sign({id:userFromDb._id}, "privateKey",{ expiresIn: '30d' });
+                var token = jwt.sign({id:userFromDb._id}, "privateKey",{ expiresIn: '1d' });
 
                 res.json({
                     result:{accessToken:token,user:userFromDb }, 

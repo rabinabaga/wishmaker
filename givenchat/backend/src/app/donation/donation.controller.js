@@ -1,22 +1,22 @@
 // const UserModel = require("../auth/user.model");
 // const GamePlanModel = require("./game_plan.model");
-const campaignSvc = require("./campaign.service.js");
+const donationSvc = require("./donation.service.js");
 const axios = require("axios");
 const request = require("request");
 
-class CampaignController {
+class DonationController {
   //   gamePlanSvc;
   //   constructor(svc) {
   //     this.gamePlanSvc = svc;
   //   }
-  async createCampaign(req, res, next) {
+  async createDonation(req, res, next) {
     console.log("req.body", req.body, "req.file", req.file);
     try {
-      let new_campaign = await campaignSvc.createCampaign(req);
+      let newDonation = await donationSvc.createDonation(req);
       console.log("new campaign");
       res.json({
-        result: new_campaign,
-        message: "new game plan created successfully",
+        result: newDonation,
+        message: "new donation made successfully",
         meta: null,
       });
     } catch (exception) {
@@ -26,7 +26,7 @@ class CampaignController {
 
   async initializeDonation(req, res, next) {
     console.log("req.body in initialize donation", req.body);
-
+    let result = await donationSvc.createDonation(req);
     const options = {
       method: "POST",
       url: "https://a.khalti.com/api/v2/epayment/initiate/",
@@ -38,7 +38,7 @@ class CampaignController {
         return_url: "http://example.com/",
         website_url: "https://example.com/",
         amount: "1000",
-        purchase_order_id: "Order01",
+        purchase_order_id: "test123",
         purchase_order_name: "test",
         customer_info: {
           name: "Ram Bahadur",
@@ -51,11 +51,6 @@ class CampaignController {
       if (error) throw new Error(error);
       console.log(response.body, "body");
     });
-
-    // const response = await axios.post(options.url, options.body, {
-    //   headers: options.headers,
-    // });
-    // console.log("response in c", response);
   }
   async deleteGamePlan(req, res, next) {
     try {
@@ -94,5 +89,5 @@ class CampaignController {
   }
 }
 
-const campaignCtrl = new CampaignController();
-module.exports = campaignCtrl;
+const donationCtrl = new DonationController();
+module.exports = donationCtrl;

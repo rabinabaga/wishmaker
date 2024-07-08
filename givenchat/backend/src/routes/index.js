@@ -9,6 +9,8 @@ const todoProjectsRoutes = require("../app/todoProjects/todoProjects.router.js")
 
 const campaignRoutes = require("../app/campaign/campaign.router.js");
 
+const donationRoutes = require("../app/donation/donation.router.js");
+
 
 
 router.use('/auth',authRoutes);
@@ -19,5 +21,6 @@ router.use('/messages', messagesRoutes);
 router.use("/todoprojects", todoProjectsRoutes);
 
 router.use("/campaign", campaignRoutes);
+router.use("/donation", donationRoutes);
 
 module.exports = router;

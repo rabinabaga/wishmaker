@@ -21,11 +21,7 @@ router.post(
   checkAuthentication,
   campaignCtrl.createCampaign
 );
-router.post(
-  "/initialize-donation",
-  checkAuthentication,
-  campaignCtrl.initializeDonation
-);
+
 router.get(
   "/",
   checkAuthentication,
