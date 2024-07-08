@@ -57,9 +57,7 @@ const Home = () => {
     (state) => state.CampaignsAsync.campaignsDataAsync
   );
 
-  const handleDonateToCampaignClicks = () => {
-
-  };
+  const handleDonateToCampaignClicks = () => {};
 
   let formData = new FormData();
   const handleFileChange = (e) => {
@@ -82,25 +80,40 @@ const Home = () => {
   const toggleCampaignModal = () => setModalCampaign(!modalCampaign);
   const handleDonate = async () => {
     //axios call
-    //details: campaign_id, amountpledged, 
+    //details: campaign_id, amountpledged,
     try {
       const details = {
-        campaignId:activeCampaignForDonation._id,
-        donationAmount:amountPledged
-      }
-        const config = {
-          headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWVkMDg0ZDVhM2Y4NTQ5MDlkMDIzNSIsImlhdCI6MTcyMDQxODA0OCwiZXhwIjoxNzIzMDEwMDQ4fQ.uDBop9w3yZ0yeO6KYCCtAvRkRJCANfZTen8-VhyViYE`,
-          },
-        };
+        campaignId: activeCampaignForDonation._id,
+        donationAmount: amountPledged,
+      };
+      const config = {
+        headers: {
+          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWVkMDg0ZDVhM2Y4NTQ5MDlkMDIzNSIsImlhdCI6MTcyMDQxODA0OCwiZXhwIjoxNzIzMDEwMDQ4fQ.uDBop9w3yZ0yeO6KYCCtAvRkRJCANfZTen8-VhyViYE`,
+        },
+      };
 
-        const response = await axios.post("/donation/initialize-donation", details, config);
-        console.log("data in handleDonate", response);
-      } catch (err) {
-        console.log("failed to donate photos", err);
+      const response = await axios.post(
+        "/donation/initialize-donation",
+        details,
+        config
+      );
+      console.log("data in handleDonate", response.result.responseFromKhalti);
+      const dataReturnedObjKhalti = JSON.parse(
+        response.result.responseFromKhalti
+      );
+      console.log("data returned khalti", dataReturnedObjKhalti);
+      console.log("dataReturnedObjKhalti.pidx", dataReturnedObjKhalti.pidx);
+      if (dataReturnedObjKhalti.pidx) {
+        window.open(
+          `${dataReturnedObjKhalti.payment_url}`,
+          "_blank",
+          "noopener, noreferrer"
+        );
       }
-
-  }
+    } catch (err) {
+      console.log("failed to donate photos", err);
+    }
+  };
 
   // Add To do
   const handleTodoClicks = () => {
@@ -485,7 +498,6 @@ const Home = () => {
               setDonateModal(false);
               handleDonate();
             }}
-          
           >
             {!!isEdit ? "Save" : "Proceed"}
           </button>
