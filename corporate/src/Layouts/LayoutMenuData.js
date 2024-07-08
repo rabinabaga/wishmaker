@@ -151,8 +151,8 @@ const Navdata = () => {
 
      const menuItems = [
        {
-         id: "Get Things Done",
-         label: "Get Things Done",
+         id: "Analytics",
+         label: "Analytics",
          icon: "ri-honour-line",
          link: "/get-things-done",
          click: function (e) {
@@ -161,8 +161,8 @@ const Navdata = () => {
          },
        },
        {
-         id: "Your  Businesses",
-         label: "Your - Businesses",
+         id: "Pages",
+         label: "Pages",
          icon: "ri-briefcase-line",
          link: "/your-businesses",
          click: function (e) {
@@ -171,8 +171,8 @@ const Navdata = () => {
          },
        },
        {
-         id: "Your  Businesses Redux",
-         label: "Your - Businesses - Redux",
+         id: "Manage Users",
+         label: "Manage Users",
          icon: "ri-briefcase-line",
          link: "/your-businesses-redux",
          click: function (e) {
@@ -181,8 +181,8 @@ const Navdata = () => {
          },
        },
        {
-         id: "Your  Businesses Redux Async",
-         label: "Your - Businesses - Redux - Async",
+         id: "Settings",
+         label: "Settings",
          icon: "ri-briefcase-line",
          link: "/your-businesses-redux-async",
          click: function (e) {

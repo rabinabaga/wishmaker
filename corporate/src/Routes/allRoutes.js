@@ -10,6 +10,7 @@ import Dashboard from "../pages/Dashboard";
 import Home from "../pages/Home";
 const authProtectedRoutes = [
   { path: "/home", component: <Home /> },
+  { path: "/dashboard", component: <Dashboard /> },
   { path: "/your-businesses", component: <YourBusinesses /> },
   { path: "/your-businesses-redux", component: <YourBusinessesRedux /> },
   {
