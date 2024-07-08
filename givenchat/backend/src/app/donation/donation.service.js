@@ -51,7 +51,24 @@ class DonationService {
       //   return resultForFrontend;
       // });
       const response = await request(options);
-      console.log("response from khalti", response);
+      const responseObj =await  JSON.parse(response);
+      console.log("responseObj", responseObj);
+
+      console.log("response pidx from khalti", responseObj["pidx"]);
+
+        const updatedDonation = await DonationModel.findByIdAndUpdate(
+          result._id,
+          { $set: {
+            pidx:responseObj["pidx"]
+          } },
+          {
+            new: true, // Return the updated document
+            runValidators: true, // Run validation on the updated document
+             // Omit undefined fields from the update
+          }
+        );
+        console.log("updated daonation", updatedDonation);
+
       const resultForFrontend = {
         responseFromKhalti: response,
         campaign:campaign,
