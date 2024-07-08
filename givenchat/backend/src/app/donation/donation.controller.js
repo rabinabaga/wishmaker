@@ -26,31 +26,14 @@ class DonationController {
 
   async initializeDonation(req, res, next) {
     console.log("req.body in initialize donation", req.body);
-    let result = await donationSvc.createDonation(req);
-    const options = {
-      method: "POST",
-      url: "https://a.khalti.com/api/v2/epayment/initiate/",
-      headers: {
-        Authorization: "key live_secret_key_68791341fdd94846a146f0457ff7b455",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        return_url: "http://example.com/",
-        website_url: "https://example.com/",
-        amount: "1000",
-        purchase_order_id: "test123",
-        purchase_order_name: "test",
-        customer_info: {
-          name: "Ram Bahadur",
-          email: "test@khalti.com",
-          phone: "9800000001",
-        },
-      }),
+    let response = await donationSvc.createDonation(req);
+
+    const data = {
+      result: response,
+      meta: null,
+      msg: "donation initialized",
     };
-    request(options, function (error, response) {
-      if (error) throw new Error(error);
-      console.log(response.body, "body");
-    });
+    res.json(data);
   }
   async deleteGamePlan(req, res, next) {
     try {
