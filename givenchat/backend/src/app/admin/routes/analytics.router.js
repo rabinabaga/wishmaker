@@ -3,7 +3,10 @@ const router = require("express").Router();
 
 const checkAuthentication = require("../../../middlewares/auth.middleware");
 
-router.get("/", checkAuthentication, (req, res) => {
+const checkPermission = require("../../../middlewares/rbac.middleware");
+
+
+router.get("/", checkAuthentication,checkPermission("admin"), (req, res) => {
   res.json("Hello Analytics");
 });
 

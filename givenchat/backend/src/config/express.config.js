@@ -4,6 +4,7 @@ const cors = require("cors");
 const multer = require("multer");
 const bodyParser = require("body-parser");
 const { ZodError } = require("zod");
+const {TokenExpiredError} = require("jsonwebtoken")
 
 app.use(cors());
 require("./mongodb.config");
@@ -26,6 +27,7 @@ app.use((error, req, res, next) => {
   let data = {};
   let errBag;
   let code;
+  console.log("error", error);
 
   if (error instanceof ZodError) {
     error.code = 403;
@@ -37,6 +39,7 @@ app.use((error, req, res, next) => {
     console.log("error here", error.code);
   } else {
     errBag = error;
+    console.log("error bag", errBag);
   }
 
   code = error.code ?? 500;
